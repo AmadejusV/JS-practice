@@ -8,7 +8,7 @@
             "type": "pwa-chrome",
             "request": "launch",
             "name": "Launch Chrome against localhost",
-            "url": "file:///C:/Users/amade/Desktop/functions-01-starting-code/index.html",
+            "url": "file:///C:/Users/amade/Desktop/Practice%20JS%20folder/rock-paper-scissors/index.html",
             "webRoot": "${workspaceFolder}"
         }
     ]
