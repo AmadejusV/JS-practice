@@ -36,11 +36,21 @@ const getPlayerChoice = () => {
 };
 
 const selectionInput = () => {
-  //get input, convert to lower case
-  let selection = prompt("Rock, paper or scissors?", "").toLowerCase();
+  let selection="";
+  let cancelIteration=0;
+  while (!selection) {
+    if (cancelIteration>=3) {
+      alert("Canceled 3 times, rather than playing, breaking operation. \n Refresh page to try again.");
+      break;
+    }
+    //get input, convert to lower case
+    selection = prompt("Rock, paper or scissors?", "");
+    cancelIteration++;
+  }
   //convert first letter of input to upper case
-  const capitalizedSelection =
-    selection.charAt(0).toUpperCase() + selection.slice(1);
+  selection = selection.toLowerCase();
+  const capitalizedSelection = selection.charAt(0).toUpperCase() + selection.slice(1);
+
   return capitalizedSelection;
 };
 
@@ -120,8 +130,8 @@ const sumUpArray = (numberArray) => {
 
 console.log(sumUpArray(numbers));
 
-const showResult = (result)=>{
-  console.log(`The result passed to callback function is this ${result}`);
+const showResult = (messageText, result)=>{
+  console.log(`${messageText} ${result}`);
 }
 
 //rest operator permits usage of more than set amount of parameters in the function
@@ -133,8 +143,9 @@ const sumUp = (callbackFunction, ...numbers) => {
   callbackFunction(sum);
   return sum;
 };
-//using a callback function
-console.log(sumUp(showResult,1,2,3,4,5,6,7,8,9));
+//using a callback function, bind lets you insert an argument to showResult function, that argument would go first in line
+//before the arguments that were given where this callback function was first called
+console.log(sumUp(showResult.bind(this, "The sum is"),1,2,3,4,5,6,7,8,9));
 
 
 //using ancient magic to achieve similar functionality to ...restOperator
