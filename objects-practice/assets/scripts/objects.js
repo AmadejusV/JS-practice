@@ -24,14 +24,28 @@ const updateMovieList = (filter = "") => {
     : movieList.filter(movie => movie.info.title.includes(filter));
 
   filteredMovies.forEach((movie) => {
-    const newMovie = document.createElement("li");
-    let text = movie.info.title + " - ";
+    //checks if info property exists in movie. alternative to movie.info === undefined
+    // if(!("info" in movie)){
+    //   console.log("info property doesn't exist");
+    // }
 
+    //destructuring 
+    const {info} = movie;
+    //destructuring and giving property a new name for convinience
+    // const {title: movieTitle} = movie.info; //movie.info or info;
+    const newMovie = document.createElement("li");
+
+    //destructuring and binding a shorthand method to movie object
+    let {getFormattedTitle} = movie;
+    // getFormattedTitle = getFormattedTitle.bind(movie);
+    getFormattedTitle = getFormattedTitle.call(movie);
+
+    let text = getFormattedTitle() + " - ";
 
     //dynamic access to object keys via forin loop
-    for (const key in movie.info) {
+    for (const key in info) {
       if (key !== "title") {
-        text += ` ${key}: ${movie.info[key]}`;
+        text += ` ${key}: ${info[key]}`;
       }
     }
     newMovie.textContent = text;
@@ -67,7 +81,11 @@ const addMovieHandler = () => {
         title,
         [extraName]: extraValue,
       },
-      id: Math.random() * 150 * 15,
+      id: (Math.random() * 150 * 15).toString(),
+      //method shorthand
+      getFormattedTitle(){
+        return this.info.title.toUpperCase();
+      }
     };
     movieList.push(newMovie);
     clearInputs();
