@@ -38,13 +38,12 @@ const updateMovieList = (filter = "") => {
     //destructuring and binding a shorthand method to movie object
     let {getFormattedTitle} = movie;
     // getFormattedTitle = getFormattedTitle.bind(movie);
-    getFormattedTitle = getFormattedTitle.call(movie);
 
-    let text = getFormattedTitle() + " - ";
+    let text = getFormattedTitle.call(movie) + " - ";
 
     //dynamic access to object keys via forin loop
     for (const key in info) {
-      if (key !== "title") {
+      if (key !== "title" && key !== "_title") {
         text += ` ${key}: ${info[key]}`;
       }
     }
@@ -68,17 +67,28 @@ const clearInputs = () => {
 };
 
 const addMovieHandler = () => {
-  let title = isValidString(titleInput.value);
+  let title = titleInput.value;
   let extraName = isValidString(extraNameInput.value);
   let extraValue = isValidString(extraValueInput.value);
 
-  if (title && extraName && extraValue) {
+  if (extraName && extraValue) {
     //when property name matches argument name or key name matches value name
     //title: title, can be changed to a single word title, it will get mapped and work
     //[extraName is a dynamically added key name]
     const newMovie = {
       info: {
-        title,
+        //creating getter and setter
+        set title(val){
+          if(val.trim()===''){
+            this._title = "DEFAULT_TITLE";
+            return;
+          }
+          this._title = val;
+        },
+        get title(){
+          return this._title;
+        },
+        //dynamic property name setting 'extraName'
         [extraName]: extraValue,
       },
       id: (Math.random() * 150 * 15).toString(),
@@ -87,6 +97,8 @@ const addMovieHandler = () => {
         return this.info.title.toUpperCase();
       }
     };
+    //using setter to set title
+    newMovie.info.title = title.toUpperCase();
     movieList.push(newMovie);
     clearInputs();
     console.log(movieList);
@@ -98,7 +110,7 @@ const addMovieHandler = () => {
 };
 
 const searchForMovieHandler = () => {
-  const userInput = searchByTitleValue.value;
+  const userInput = searchByTitleValue.value.toUpperCase();
   updateMovieList(userInput);
 };
 
