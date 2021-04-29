@@ -69,7 +69,14 @@ class ShoppingCart extends Component {
 
   constructor(renderHookId) {
     //super method calls the constructor of the parent class, passes it's argument to parent constructor parameters as argument
-    super(renderHookId);
+    super(renderHookId, false); //adding false for the 3 approach to not call render
+
+    //approach 3 adding method as a property
+    this.orderProducts=()=>{
+      console.log("Ordering products...");
+      console.log(this.shoppingList);
+    }
+    this.render();
     // this.render();    will use overriding to call it from the component class
   }
 
@@ -79,10 +86,11 @@ class ShoppingCart extends Component {
     this.cartItems = updatedItems;
   }
 
-  orderProducts(){
-    console.log("Ordering products...");
-    console.log(this.shoppingList);
-  }
+  //approach 1-2
+  // orderProducts(){
+  //   console.log("Ordering products...");
+  //   console.log(this.shoppingList);
+  // }
 
   render() {
     const cartElement = this.createRootElement("section", "cart");
@@ -91,8 +99,12 @@ class ShoppingCart extends Component {
       <button>Order now!</button>
     `;
     const orderButton = cartElement.querySelector("button");
+    //approach 1
     // orderButton.addEventListener("click", this.orderProducts.bind(this));
-    orderButton.addEventListener("click", ()=>this.orderProducts());
+    //approach 2
+    // orderButton.addEventListener("click", ()=>this.orderProducts());
+    //approach 3
+    orderButton.addEventListener("click", this.orderProducts);
     this.totalOutput = cartElement.querySelector("h2");
   }
 }
@@ -135,17 +147,19 @@ class ProductItem extends Component {
 
 //everything related to productList goes in it
 class ProductList extends Component {
-  products = [];
+  //hash (#) sets products property as private
+  #products = [];
 
   //fields are magically added during object initiation via constructor, description unnecessary
   constructor(renderHookId) {
-    super(renderHookId);
+    super(renderHookId, false);
+    this.render();
     this.fetchProducts();
     // this.render();
   }
 
   fetchProducts() {
-    this.products = [
+    this.#products = [
       // a new object initiation
       new Product(
         "A pillow",
@@ -165,7 +179,7 @@ class ProductList extends Component {
   }
 
   renderProducts() {
-    for (const product of this.products) {
+    for (const product of this.#products) {
       //giving it an object to be used for new li element creation and an 'id' to select an element to which to append it
       new ProductItem(product, "prod-list");
     }
@@ -177,7 +191,7 @@ class ProductList extends Component {
       new ElementAttribute("id", "prod-list"),
     ]);
     //render products only if it's not empty
-    if (this.products && this.products.length > 0) {
+    if (this.#products && this.#products.length > 0) {
       this.renderProducts();
     }
   }
